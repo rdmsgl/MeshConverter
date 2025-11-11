@@ -43,7 +43,7 @@ if(MESHORIENT_DOWNLOAD)
 endif()
 
 # 设置依赖路径
-set(EIGEN_BASE ${EXTERNAL_DIR}/eigen)
+set(EIGEN_BASE ${EXTERNAL_DIR}/eigen3)
 set(IGL_BASE ${EXTERNAL_DIR}/libigl)
 
 # 平台特定配置
@@ -82,6 +82,13 @@ endif()
 
 # 使用现代target_include_directories替代旧方法
 add_executable(MeshConverter ${SOURCES})
+
+set_target_properties(MeshConverter
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY
+        "${CMAKE_BINARY_DIR}/$<CONFIG>"
+)
+
 
 target_include_directories(MeshConverter SYSTEM PRIVATE  # SYSTEM减少编译警告
   ${EXTERNAL_DIR}/cli11/include/CLI
