@@ -78,6 +78,56 @@ int MESHIO::readEPS(std::string filename, int& cou, std::map<int, double>& mpd, 
 	}
 	return 0;
 }
+// RDMSGL: 2025-10-22 - adding support for quads
+int MESHIO::readVTK_quad_version(std::string filename, Mesh& mesh, std::string mark_pattern) {
+    auto& M = mesh.Masks;
+    auto& V = mesh.Vertex;
+    auto& T = mesh.Topo;
+    int nPoints = 0;
+    int nFacets = 0;
+    std::ifstream vtk_file;
+    vtk_file.open(filename);
+    if (!vtk_file.is_open()) {
+        std::cout << "No such file. - " << filename << std::endl;
+        return -1;
+    }
+    std::string vtk_type_str = "CONNECTIVITY";
+    char buffer[BUFFER_LENGTH];
+    while (!vtk_file.eof()) {
+        vtk_file.getline(buffer, BUFFER_LENGTH);
+        std::string line = (std::string)buffer;
+        if (vtk_file.peek() == EOF) break;
+        if (line.length() < 2 || buffer[0] == '#')
+            continue;
+
+        if (line.find("POINTS ") != std::string::npos) {
+            std::vector<std::string> words = seperate_string(line);
+            nPoints = stoi(words[1]);
+            V.resize(nPoints, 3);
+            for (int i = 0; i < nPoints; i++) {
+                vtk_file >> V(i, 0) >> V(i, 1) >> V(i, 2);
+                
+            }
+        }
+        if (line.find("CELLS") != std::string::npos) {
+            std::vector<std::string> words = seperate_string(line);
+            nFacets = stoi(words[1])-1;
+            T.resize(nFacets, 3);
+        }
+        if (line.find("CONNECTIVITY") != std::string::npos) {
+            
+            string trash;
+            //vtk_file >> trash;
+            for (int i = 0; i < nFacets; i++) {
+                vtk_file >> T(i,0) >> T(i, 1) >> T(i, 2);
+            }
+          //  std::cout << T(0, 0) << std::endl;
+        }
+    }
+  //  std::cout << T(0, 0) << std::endl;
+    vtk_file.close();
+    return 1;
+}
 int MESHIO::readVTK_newer_version(std::string filename, Mesh& mesh, std::string mark_pattern) {
     auto& M = mesh.Masks;
     auto& V = mesh.Vertex;
