@@ -43,7 +43,7 @@ if(MESHORIENT_DOWNLOAD)
 endif()
 
 # 设置依赖路径
-set(EIGEN_BASE ${EXTERNAL_DIR}/eigen3)
+set(EIGEN_BASE ${EXTERNAL_DIR}/eigen)
 set(IGL_BASE ${EXTERNAL_DIR}/libigl)
 
 # 平台特定配置
