@@ -1068,8 +1068,9 @@ int MESHIO::readSTL(std::string input_filename, Mesh &mesh){
     Eigen::MatrixXi F, NF;
     Eigen::VectorXi SVI, SVJ;
     Eigen::VectorXi I;
-    std::ifstream fstr(input_filename);
-    igl::readSTL(fstr, V, F, N);
+    //std::ifstream fstr(input_filename);                          // PST 2025-10-10 - igl::readSTL requires a filename (std::string&) not an ifstream
+    //igl::readSTL(fstr, V, F, N);                                 // PST 2025-10-10 - igl::readSTL requires a filename (std::string&) not an ifstream
+    igl::readSTL(input_filename, V, F, N);                         // PST 2025-10-10 - igl::readSTL requires a filename (std::string&) not an ifstream
     igl::remove_duplicate_vertices(V, F, 1e-10, NV,SVI,SVJ, NF);
     mesh.Vertex = NV;
     mesh.Topo = F;
